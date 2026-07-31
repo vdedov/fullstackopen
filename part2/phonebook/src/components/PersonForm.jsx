@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Field from "./Field"
+import personService from "../services/persons"
 
 const Button = ({ text }) => (
   <div>
@@ -15,16 +16,40 @@ const PersonForm = ({ persons, setPersons }) => {
   const addPerson = (event) => {
     event.preventDefault()
 
-    if (persons.some(person => person.name == newName)) {
-      alert(`${ newName } is already added to phonebook`)
+    const existedPerson = persons.find(p => p.name === newName)
+
+    if (existedPerson) {
+      if (!window.confirm(`${existedPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
+        return
+      }
+
+      const newObject = {
+        ...existedPerson,
+        number: newNumber,
+      }
+
+      personService
+        .update(existedPerson.id, newObject)
+        .then(returnedPerson => {
+          setPersons(persons.map(p => p.id === existedPerson.id ? returnedPerson : p))
+        })
+        .catch(error => {
+          alert(
+            `the person ${existedPerson.name} was already deleted from server`
+          )
+          setPersons(persons.filter(p => p.id !== existedPerson.id))
+        })
     } else {
       const newObject = {
         name: newName,
         number: newNumber,
-        id: String(persons.length + 1),
       }
 
-      setPersons(persons.concat(newObject))
+      personService
+        .create(newObject)
+        .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+      })
     }
 
     setNewName('')
