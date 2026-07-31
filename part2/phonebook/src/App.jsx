@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Persons from "./components/Persons"
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
+import Notification from "./components/Notification"
 import personService from "./services/persons"
 
 const App = () => {
@@ -22,9 +23,12 @@ const App = () => {
       person.name.toLowerCase().includes(newFilter)
     )
 
+  const [notification, setNotification] = useState(null)
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={ notification } />
       <Filter
         newFilter={newFilter}
         setNewFilter={setNewFilter}
@@ -34,6 +38,8 @@ const App = () => {
       <PersonForm
         persons={persons}
         setPersons={setPersons}
+        notification={notification}
+        setNotification={setNotification}
       />
 
       <h3>Numbers</h3>

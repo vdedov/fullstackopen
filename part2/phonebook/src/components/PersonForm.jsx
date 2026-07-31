@@ -9,7 +9,7 @@ const Button = ({ text }) => (
 )
 
 
-const PersonForm = ({ persons, setPersons }) => {
+const PersonForm = ({ persons, setPersons, notification, setNotification }) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
@@ -34,10 +34,14 @@ const PersonForm = ({ persons, setPersons }) => {
           setPersons(persons.map(p => p.id === existedPerson.id ? returnedPerson : p))
         })
         .catch(error => {
-          alert(
-            `the person ${existedPerson.name} was already deleted from server`
-          )
+          setNotification({
+            text: `Information of ${newObject.name} has already been deleted from server`,
+            isError: true
+          })
           setPersons(persons.filter(p => p.id !== existedPerson.id))
+          setTimeout(() => {
+            setNotification(null)
+          }, 2000)
         })
     } else {
       const newObject = {
@@ -48,7 +52,14 @@ const PersonForm = ({ persons, setPersons }) => {
       personService
         .create(newObject)
         .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
+          setPersons(persons.concat(returnedPerson))
+          setNotification({
+            text: `Added ${newObject.name}`,
+            isError: false
+          })
+          setTimeout(() => {
+            setNotification(null)
+          }, 2000)
       })
     }
 
