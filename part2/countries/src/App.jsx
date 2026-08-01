@@ -10,6 +10,9 @@ const App = () => {
     countryService.getAll().then(countries => {
       setCountries(countries)
     })
+      .catch(error => {
+      console.error(error);
+    })
   }, [])
 
   const handleChange = event => {
