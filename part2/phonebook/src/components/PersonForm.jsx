@@ -60,7 +60,16 @@ const PersonForm = ({ persons, setPersons, notification, setNotification }) => {
           setTimeout(() => {
             setNotification(null)
           }, 2000)
-      })
+        })
+        .catch(error => {
+          setNotification({
+            text: error.response.data.error,
+            isError: true
+          })
+          setTimeout(() => {
+            setNotification(null)
+          }, 2000)
+        })
     }
 
     setNewName('')
