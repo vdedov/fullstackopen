@@ -104,6 +104,38 @@ test('a blog without author cannot be added', async () => {
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 })
 
+test('update a blog with status code 200 if id is valid', async () => {
+  const blogsForUpdate = await helper.blogsInDb()
+  const blogforUpdate = blogsForUpdate[0]
+
+  const blogId = blogforUpdate.id
+
+  blogforUpdate.likes += blogforUpdate.likes
+
+  await api
+    .put(`/api/blogs/${blogId}`)
+    .send(blogforUpdate)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  const updatedBlog = blogsAtEnd.find(b => b.id === blogId)
+  assert.strictEqual(updatedBlog.likes, blogforUpdate.likes)
+})
+
+test('blog deletion with status code 204 if id is valid', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  const ids = blogsAtEnd.map(b => b.id)
+  assert(!ids.includes(blogToDelete.id))
+
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
