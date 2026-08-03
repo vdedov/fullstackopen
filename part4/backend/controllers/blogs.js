@@ -51,7 +51,8 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
     return response.status(400).json({ error: 'blog does not belong user' })
   }
 
-  existedUser.blogs = existedUser.blogs.filter(b => b.id !== request.params.id)
+  await Blog.findByIdAndDelete(request.params.id)
+  existedUser.blogs = existedUser.blogs.filter(b => b.toString() !== request.params.id)
   await existedUser.save()
 
   response.status(204).end()

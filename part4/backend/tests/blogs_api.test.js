@@ -2,15 +2,41 @@ const assert = require('node:assert')
 const { test, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
 const app = require('../app')
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
+let authorization
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('password', 10)
+  const user = new User({
+    username: 'root',
+    name: 'Superuser',
+    passwordHash,
+  })
+
+  const savedUser = await user.save()
+  const blogs = helper.initialBlogs.map(blog => ({
+    ...blog,
+    user: savedUser._id,
+  }))
+
+  const savedBlogs = await Blog.insertMany(blogs)
+  savedUser.blogs = savedBlogs.map(blog => blog._id)
+  await savedUser.save()
+
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'password' })
+
+  authorization = `Bearer ${loginResponse.body.token}`
 })
 
 test('blogs are returned as json', async () => {
@@ -45,6 +71,7 @@ test('a valid blog can be added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', authorization)
     .send(newBlog)
     .expect(201)
 
@@ -64,6 +91,7 @@ test('a blog without filled like can be added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', authorization)
     .send(newBlog)
     .expect(201)
 
@@ -82,6 +110,7 @@ test('a blog without title cannot be added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', authorization)
     .send(newBlog)
     .expect(400)
 
@@ -97,6 +126,7 @@ test('a blog without author cannot be added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', authorization)
     .send(newBlog)
     .expect(400)
 
@@ -126,7 +156,10 @@ test('blog deletion with status code 204 if id is valid', async () => {
   const blogsAtStart = await helper.blogsInDb()
   const blogToDelete = blogsAtStart[0]
 
-  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .set('Authorization', authorization)
+    .expect(204)
 
   const blogsAtEnd = await helper.blogsInDb()
 
