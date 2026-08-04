@@ -21,7 +21,7 @@ const App = () => {
   const postFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs => 
+    blogService.getAll().then(blogs =>
       setBlogs( blogs.toSorted((a, b) => b.likes - a.likes) )
     )
   }, [])
@@ -46,7 +46,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setNotification({ text: 'wrong username or password', isError: true})
+      setNotification({ text: 'wrong username or password', isError: true })
       setTimeout(() => {
         setNotification(null)
       }, 2000)
@@ -65,8 +65,6 @@ const App = () => {
     </Togglable>
   )
 
-
-
   return (
     <div>
       <h2>blogs</h2>
@@ -79,10 +77,10 @@ const App = () => {
             {user.name} logged in <Logout setUser={setUser} />
           </div>
           <Togglable buttonLabel="create new blog" ref={postFormRef}>
-          <NewPost
-            setBlogs={setBlogs}
-            setNotification={setNotification}
-            toggleVisibility={() => postFormRef.current.toggleVisibility()}
+            <NewPost
+              setBlogs={setBlogs}
+              setNotification={setNotification}
+              toggleVisibility={() => postFormRef.current.toggleVisibility()}
             />
           </Togglable>
         </div>

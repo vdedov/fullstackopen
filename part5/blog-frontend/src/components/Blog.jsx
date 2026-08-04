@@ -9,7 +9,7 @@ const Blog = ({ blog, setBlogs }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  
+
   const [isDetailed, setDetailed] = useState(false)
 
   const incLike = async () => {
@@ -45,13 +45,12 @@ const Blog = ({ blog, setBlogs }) => {
       <button onClick={() => handleRemove()}>remove</button>
     </div>
   )
-  
-  
+
   return (
     <div style={blogStyle}>
       {blog.title}
       <button onClick={() => setDetailed(!isDetailed)}>
-        {isDetailed ? "hide" : "view"}
+        {isDetailed ? 'hide' : 'view'}
       </button>
       {isDetailed && viewDetails()}
     </div>
