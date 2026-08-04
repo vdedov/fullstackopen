@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, setBlogs, handleLike }) => {
+const Blog = ({ blog, setBlogs, handleLike, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -24,7 +24,9 @@ const Blog = ({ blog, setBlogs, handleLike }) => {
     })
 
     setBlogs(blogs =>
-      blogs.map(b => b.id === blog.id ? updatedBlog : b)
+      blogs
+        .map(b => b.id === blog.id ? { ...updatedBlog, user: blog.user } : b)
+        .toSorted((a, b) => b.likes - a.likes)
     )
   }
 
@@ -39,6 +41,8 @@ const Blog = ({ blog, setBlogs, handleLike }) => {
     )
   }
 
+  const canRemove = blog.user?.username === user?.username
+
   const viewDetails = () => (
     <div>
       <p>{blog.url}</p>
@@ -47,7 +51,7 @@ const Blog = ({ blog, setBlogs, handleLike }) => {
         <button onClick={() => incLike()}>like</button>
       </p>
       <p>{blog.author}</p>
-      <button onClick={() => handleRemove()}>remove</button>
+      {canRemove && <button onClick={() => handleRemove()}>remove</button>}
     </div>
   )
 
