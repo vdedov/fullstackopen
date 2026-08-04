@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const NewPost = ({setBlogs, setNotification}) => {
-  const [title, setTitle] = useState('') 
-  const [author, setAuthor] = useState('') 
-  const [url, setUrl] = useState('') 
+const NewPost = ({setBlogs, setNotification, toggleVisibility}) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const handleNewPost = async event => {
     event.preventDefault()
@@ -15,6 +15,7 @@ const NewPost = ({setBlogs, setNotification}) => {
       setTitle('')
       setAuthor('')
       setUrl('')
+      toggleVisibility()
       setNotification({ text: 'a new post has been added', isError: false })
     } catch {
       setNotification({ text: 'something went wrong', isError: true })
@@ -24,41 +25,35 @@ const NewPost = ({setBlogs, setNotification}) => {
       }, 2000)
     }
   }
-  
+
   return (
-    <form onSubmit={handleNewPost}>
-      <div>
-        <label>
-          title
-          <input
-            type="text"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          author
-          <input
-            type="text"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          url
-          <input
-            type="text"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </label>
-      </div>
-      <button type="submit">create</button>
-    </form>
+    <div>
+      <h2>create new</h2>
+      <form onSubmit={handleNewPost}>
+        <div>
+            title
+            <input
+              value={title}
+              onChange={event => setTitle(event.target.value)}
+            />
+        </div>
+        <div>
+            author
+            <input
+              value={author}
+              onChange={event => setAuthor(event.target.value)}
+            />
+        </div>
+        <div>
+            url
+            <input
+              value={url}
+              onChange={event => setUrl(event.target.value)}
+            />
+        </div>
+        <button type="submit">create</button>
+      </form>
+    </div>
   )
 }
 
