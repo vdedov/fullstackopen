@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, setBlogs }) => {
+const Blog = ({ blog, setBlogs, handleLike }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -13,6 +13,11 @@ const Blog = ({ blog, setBlogs }) => {
   const [isDetailed, setDetailed] = useState(false)
 
   const incLike = async () => {
+    if (handleLike) {
+      handleLike(blog)
+      return
+    }
+
     const updatedBlog = await blogService.update({
       ...blog,
       likes: blog.likes + 1
@@ -47,8 +52,10 @@ const Blog = ({ blog, setBlogs }) => {
   )
 
   return (
-    <div style={blogStyle}>
-      {blog.title}
+    <div style={blogStyle} className="blog">
+      <div className="blog-summary">
+        {blog.title} {blog.author}
+      </div>
       <button onClick={() => setDetailed(!isDetailed)}>
         {isDetailed ? 'hide' : 'view'}
       </button>
