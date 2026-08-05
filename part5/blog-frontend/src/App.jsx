@@ -4,7 +4,6 @@ import {
 } from 'react-router-dom'
 import Notification from './components/Notification'
 import Home from './components/Home'
-// import Togglable from './components/Togglable'
 import Blog from './components/Blog'
 import NewPlog from './components/NewBlog'
 import LoginForm from './components/LoginForm'
@@ -21,8 +20,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [notification, setNotification] = useState(null)
-
-  // const postFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -92,11 +89,13 @@ const App = () => {
         <Route
           path="/blogs/:id"
           element={
-            <Blog
-              blog={blog}
-              setBlogs={setBlogs}
-              user={user}
-            />
+            blog
+              ? <Blog
+                blog={blog}
+                setBlogs={setBlogs}
+                user={user}
+              />
+              : <div>blog not found</div>
           }
         />
         <Route path="/" element={<Home blogs={blogs} />} />

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import blogService from '../services/blogs'
 
 const Blog = ({ blog, setBlogs, handleLike, user }) => {
@@ -9,8 +8,6 @@ const Blog = ({ blog, setBlogs, handleLike, user }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-
-  const [isDetailed, setDetailed] = useState(false)
 
   const incLike = async () => {
     if (handleLike) {
@@ -43,27 +40,18 @@ const Blog = ({ blog, setBlogs, handleLike, user }) => {
 
   const canRemove = blog.user?.username === user?.username
 
-  const viewDetails = () => (
-    <div>
-      <p>{blog.url}</p>
-      <p>
-        likes {blog.likes}
-        <button onClick={() => incLike()}>like</button>
-      </p>
-      <p>{blog.author}</p>
-      {canRemove && <button onClick={() => handleRemove()}>remove</button>}
-    </div>
-  )
-
   return (
     <div style={blogStyle} className="blog">
       <div className="blog-summary">
         {blog.title} {blog.author}
-        <button onClick={() => setDetailed(!isDetailed)}>
-          {isDetailed ? 'hide' : 'view'}
-        </button>
       </div>
-      {isDetailed && viewDetails()}
+      <p>{blog.url}</p>
+      <p>
+        likes {blog.likes}
+        {user && <button onClick={() => incLike()}>like</button>}
+      </p>
+      <p>{blog.author}</p>
+      {canRemove && <button onClick={() => handleRemove()}>remove</button>}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 const { test, describe, expect, beforeEach } = require('@playwright/test')
-const { createBlog, loginWith } = require('./helper')
+const { createBlog, loginWith, openBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -16,6 +16,7 @@ describe('Blog app', () => {
   })
   
   test('Login form is shown', async ({ page }) => {
+    await page.getByRole('link', { name: 'login' }).click()
     await expect(page.getByRole('button', { name: 'login' })).toBeVisible()
   })
 
@@ -23,14 +24,15 @@ describe('Blog app', () => {
     test('succeeds with correct credentials', async ({ page }) => {
       await loginWith(page, 'mluukkai', 'salainen')
 
-      await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+      await expect(page.getByRole('button', { name: 'logout' })).toBeVisible()
+      await expect(page.getByRole('link', { name: 'new blog' })).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
       await loginWith(page, 'mluukkai', 'wrongpassword')
 
       await expect(page.getByText('wrong username or password')).toBeVisible()
-      await expect(page.getByText('Matti Luukkainen logged in')).not.toBeVisible()
+      await expect(page.getByRole('button', { name: 'logout' })).not.toBeVisible()
     })
   })
 
@@ -48,7 +50,7 @@ describe('Blog app', () => {
       )
 
       await expect(
-        page.getByText('Playwright tests for blog app Matti Luukkainen')
+        page.getByRole('link', { name: 'Playwright tests for blog app' })
       ).toBeVisible()
     })
 
@@ -60,11 +62,10 @@ describe('Blog app', () => {
         'https://example.com/likeable'
       )
 
-      const blog = page.locator('.blog').filter({ hasText: 'Likeable blog' })
-      await blog.getByRole('button', { name: 'view' }).click()
-      await blog.getByRole('button', { name: 'like' }).click()
+      await openBlog(page, 'Likeable blog')
+      await page.getByRole('button', { name: 'like' }).click()
 
-      await expect(blog.getByText('likes 1')).toBeVisible()
+      await expect(page.locator('.blog').getByText('likes 1')).toBeVisible()
     })
 
     test('the user who added a blog can remove it', async ({ page }) => {
@@ -75,12 +76,13 @@ describe('Blog app', () => {
         'https://example.com/removable'
       )
 
-      const blog = page.locator('.blog').filter({ hasText: 'Removable blog' })
-      await blog.getByRole('button', { name: 'view' }).click()
+      await openBlog(page, 'Removable blog')
       page.on('dialog', dialog => dialog.accept())
-      await blog.getByRole('button', { name: 'remove' }).click()
+      await page.getByRole('button', { name: 'remove' }).click()
 
-      await expect(page.locator('.blog').filter({ hasText: 'Removable blog' })).toHaveCount(0)
+      await expect(page.getByText('blog not found')).toBeVisible()
+      await page.getByRole('link', { name: 'home' }).click()
+      await expect(page.getByRole('link', { name: 'Removable blog' })).toHaveCount(0)
     })
 
     test('only the user who added a blog can see the remove button', async ({ page, request }) => {
@@ -99,14 +101,15 @@ describe('Blog app', () => {
         'https://example.com/owner-only'
       )
 
-      const blog = page.locator('.blog').filter({ hasText: 'Owner-only remove blog' })
-      await blog.getByRole('button', { name: 'view' }).click()
-      await expect(blog.getByRole('button', { name: 'remove' })).toBeVisible()
+      await openBlog(page, 'Owner-only remove blog')
+      await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
 
       await page.getByRole('button', { name: 'logout' }).click()
       await loginWith(page, 'other', 'secret')
+      await openBlog(page, 'Owner-only remove blog')
 
-      await expect(blog.getByRole('button', { name: 'remove' })).not.toBeVisible()
+      await expect(page.getByRole('button', { name: 'like' })).toBeVisible()
+      await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
     })
 
     test('blogs are ordered by likes', async ({ page }) => {
@@ -114,22 +117,22 @@ describe('Blog app', () => {
       await createBlog(page, 'Second blog', 'Matti Luukkainen', 'https://example.com/second')
       await createBlog(page, 'Third blog', 'Matti Luukkainen', 'https://example.com/third')
 
-      const firstBlog = page.locator('.blog').filter({ hasText: 'First blog' })
-      const secondBlog = page.locator('.blog').filter({ hasText: 'Second blog' })
-      const thirdBlog = page.locator('.blog').filter({ hasText: 'Third blog' })
+      await openBlog(page, 'Second blog')
+      await page.getByRole('button', { name: 'like' }).click()
+      await expect(page.locator('.blog').getByText('likes 1')).toBeVisible()
+      await page.getByRole('link', { name: 'home' }).click()
 
-      await firstBlog.getByRole('button', { name: 'view' }).click()
-      await secondBlog.getByRole('button', { name: 'view' }).click()
-      await thirdBlog.getByRole('button', { name: 'view' }).click()
+      await openBlog(page, 'Third blog')
+      await page.getByRole('button', { name: 'like' }).click()
+      await expect(page.locator('.blog').getByText('likes 1')).toBeVisible()
+      await page.getByRole('button', { name: 'like' }).click()
+      await expect(page.locator('.blog').getByText('likes 2')).toBeVisible()
+      await page.getByRole('link', { name: 'home' }).click()
 
-      await secondBlog.getByRole('button', { name: 'like' }).click()
-      await thirdBlog.getByRole('button', { name: 'like' }).click()
-      await expect(thirdBlog.getByText('likes 1')).toBeVisible()
-      await thirdBlog.getByRole('button', { name: 'like' }).click()
-
-      await expect(page.locator('.blog').nth(0)).toContainText('Third blog')
-      await expect(page.locator('.blog').nth(1)).toContainText('Second blog')
-      await expect(page.locator('.blog').nth(2)).toContainText('First blog')
+      const blogLinks = page.locator('li a')
+      await expect(blogLinks.nth(0)).toHaveText('Third blog')
+      await expect(blogLinks.nth(1)).toHaveText('Second blog')
+      await expect(blogLinks.nth(2)).toHaveText('First blog')
     })
   })
 })
