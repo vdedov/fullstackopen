@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import NewPost from './NewPost'
+import NewBlog from './NewBlog'
 
 test('calls create handler with correct details when a new blog is created', async () => {
   const user = userEvent.setup()
@@ -11,7 +11,7 @@ test('calls create handler with correct details when a new blog is created', asy
   })
 
   const { container } = render(
-    <NewPost
+    <NewBlog
       setBlogs={() => {}}
       setNotification={() => {}}
       toggleVisibility={() => {}}

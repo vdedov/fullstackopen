@@ -59,10 +59,10 @@ const Blog = ({ blog, setBlogs, handleLike, user }) => {
     <div style={blogStyle} className="blog">
       <div className="blog-summary">
         {blog.title} {blog.author}
+        <button onClick={() => setDetailed(!isDetailed)}>
+          {isDetailed ? 'hide' : 'view'}
+        </button>
       </div>
-      <button onClick={() => setDetailed(!isDetailed)}>
-        {isDetailed ? 'hide' : 'view'}
-      </button>
       {isDetailed && viewDetails()}
     </div>
   )

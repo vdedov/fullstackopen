@@ -1,8 +1,12 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import {
+  Routes, Route, Link, useMatch
+} from 'react-router-dom'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
+import Home from './components/Home'
+// import Togglable from './components/Togglable'
 import Blog from './components/Blog'
-import NewPost from './components/NewPost'
+import NewPlog from './components/NewBlog'
 import LoginForm from './components/LoginForm'
 import Logout from './components/Logout'
 import blogService from './services/blogs'
@@ -18,7 +22,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [notification, setNotification] = useState(null)
 
-  const postFormRef = useRef()
+  // const postFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -54,42 +58,59 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <Togglable buttonLabel="login">
-      <LoginForm
-        username={username}
-        password={password}
-        handleUsernameChange={({ target }) => setUsername(target.value)}
-        handlePasswordChange={({ target }) => setPassword(target.value)}
-        handleSubmit={handleLogin}
-      />
-    </Togglable>
+    <LoginForm
+      username={username}
+      password={password}
+      handleUsernameChange={({ target }) => setUsername(target.value)}
+      handlePasswordChange={({ target }) => setPassword(target.value)}
+      handleSubmit={handleLogin}
+    />
   )
+
+  const padding = {
+    padding: 5
+  }
+
+  const match = useMatch('/blogs/:id')
+
+  const blog = match
+    ? blogs.find(b => b.id === match.params.id)
+    : null
 
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification notification={notification} />
-
-      {!user && loginForm()}
-      {user && (
-        <div>
-          <div>
-            {user.name} logged in <Logout setUser={setUser} />
-          </div>
-          <Togglable buttonLabel="create new blog" ref={postFormRef}>
-            <NewPost
+      <div>
+        <Link style={padding} to="/">home</Link>
+        {user && <Link style={padding} to="/create">new blog</Link>}
+        {!user
+          ? <Link style={padding} to="/login">login</Link>
+          : <Logout setUser={setUser} />
+        }
+        <Notification notification={notification} />
+      </div>
+      <Routes>
+        <Route
+          path="/blogs/:id"
+          element={
+            <Blog
+              blog={blog}
               setBlogs={setBlogs}
-              setNotification={setNotification}
-              toggleVisibility={() => postFormRef.current.toggleVisibility()}
               user={user}
             />
-          </Togglable>
-        </div>
-      )}
-
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} setBlogs={setBlogs} user={user}/>
-      )}
+          }
+        />
+        <Route path="/" element={<Home blogs={blogs} />} />
+        <Route
+          path="/login"
+          element={!user ? loginForm() : <Home blogs={blogs} />}
+        />
+        <Route path="/create" element={
+          <NewPlog
+            setBlogs={setBlogs}
+            setNotification={setNotification}
+            user={user}
+          />} />
+      </Routes>
     </div>
   )
 }

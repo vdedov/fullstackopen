@@ -1,28 +1,28 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import blogService from '../services/blogs'
 
-const NewPost = ({ setBlogs, setNotification, toggleVisibility, createBlog, user }) => {
+const NewBlog = ({ setBlogs, setNotification, user }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const navigate = useNavigate()
 
-  const handleNewPost = async event => {
+  const handleNewBlog = async event => {
     event.preventDefault()
 
     try {
       const newBlog = { title, author, url }
-      const post = createBlog
-        ? await createBlog(newBlog)
-        : await blogService.create(newBlog)
-      const postWithUser = user
-        ? { ...post, user: { username: user.username, name: user.name } }
-        : post
+      const blog = await blogService.create(newBlog)
+      const blogWithUser = user
+        ? { ...blog, user: { username: user.username, name: user.name } }
+        : blog
 
-      setBlogs(blog => blog.concat(postWithUser))
+      setBlogs(blog => blog.concat(blogWithUser))
+      navigate('/')
       setTitle('')
       setAuthor('')
       setUrl('')
-      toggleVisibility()
       setNotification({ text: 'a new post has been added', isError: false })
     } catch {
       setNotification({ text: 'something went wrong', isError: true })
@@ -36,7 +36,7 @@ const NewPost = ({ setBlogs, setNotification, toggleVisibility, createBlog, user
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={handleNewPost}>
+      <form onSubmit={handleNewBlog}>
         <div>
             title
           <input
@@ -64,4 +64,4 @@ const NewPost = ({ setBlogs, setNotification, toggleVisibility, createBlog, user
   )
 }
 
-export default NewPost
+export default NewBlog
