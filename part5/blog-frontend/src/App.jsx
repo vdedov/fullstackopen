@@ -11,6 +11,8 @@ import Logout from './components/Logout'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+import { Container, AppBar, Toolbar, Button } from '@mui/material'
+
 const App = () => {
   const [user, setUser] = useState(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -64,25 +66,27 @@ const App = () => {
     />
   )
 
-  const padding = {
-    padding: 5
-  }
-
   const match = useMatch('/blogs/:id')
 
   const blog = match
     ? blogs.find(b => b.id === match.params.id)
     : null
 
+  const hoverStyle = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
+
   return (
-    <div>
+    <Container>
+      <AppBar position="static">
+        <Toolbar>
+          <Button color="inherit" component={Link} to="/" sx={hoverStyle}>home</Button>
+          {user && <Button color="inherit" component={Link} to="/create" sx={hoverStyle}>new blog</Button>}
+          {!user
+            ? <Button color="inherit" component={Link} to="/login" sx={hoverStyle}>login</Button>
+            : <Logout setUser={setUser} />
+          }
+        </Toolbar>
+      </AppBar>
       <div>
-        <Link style={padding} to="/">home</Link>
-        {user && <Link style={padding} to="/create">new blog</Link>}
-        {!user
-          ? <Link style={padding} to="/login">login</Link>
-          : <Logout setUser={setUser} />
-        }
         <Notification notification={notification} />
       </div>
       <Routes>
@@ -110,7 +114,7 @@ const App = () => {
             user={user}
           />} />
       </Routes>
-    </div>
+    </Container>
   )
 }
 

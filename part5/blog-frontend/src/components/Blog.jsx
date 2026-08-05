@@ -1,5 +1,7 @@
 import blogService from '../services/blogs'
 
+import { Button } from '@mui/material'
+
 const Blog = ({ blog, setBlogs, handleLike, user }) => {
   const blogStyle = {
     paddingTop: 10,
@@ -43,15 +45,21 @@ const Blog = ({ blog, setBlogs, handleLike, user }) => {
   return (
     <div style={blogStyle} className="blog">
       <div className="blog-summary">
-        {blog.title} {blog.author}
+        <h2>{blog.title}</h2>
+        <p>by {blog.author}</p>
       </div>
-      <p>{blog.url}</p>
+      <a
+        href={blog.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {blog.url}
+      </a>
       <p>
-        likes {blog.likes}
-        {user && <button onClick={() => incLike()}>like</button>}
+        {blog.likes} likes
+        {user && <Button variant='outlined' onClick={() => incLike()}>like</Button>}
+        {canRemove && <Button variant='outlined' color='error' onClick={() => handleRemove()}>remove</Button>}
       </p>
-      <p>{blog.author}</p>
-      {canRemove && <button onClick={() => handleRemove()}>remove</button>}
     </div>
   )
 }

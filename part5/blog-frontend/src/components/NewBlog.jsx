@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import blogService from '../services/blogs'
 
+import { TextField, Button } from '@mui/material'
+
 const NewBlog = ({ setBlogs, setNotification, user }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -38,27 +40,27 @@ const NewBlog = ({ setBlogs, setNotification, user }) => {
       <h2>create new</h2>
       <form onSubmit={handleNewBlog}>
         <div>
-            title
-          <input
+          <TextField
             value={title}
+            placeholder='title'
             onChange={event => setTitle(event.target.value)}
           />
         </div>
         <div>
-            author
-          <input
+          <TextField
             value={author}
+            placeholder='author'
             onChange={event => setAuthor(event.target.value)}
           />
         </div>
         <div>
-            url
-          <input
+          <TextField
             value={url}
+            placeholder='url'
             onChange={event => setUrl(event.target.value)}
           />
         </div>
-        <button type="submit">create</button>
+        <Button type="submit" variant="contained">create</Button>
       </form>
     </div>
   )
