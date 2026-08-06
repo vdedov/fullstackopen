@@ -1,11 +1,19 @@
-import { useAnecdotes, useAnecdoteActions } from '../store'
+import { useAnecdotes, useAnecdoteActions } from '../stores/anecdotes'
+import { useNotificationActions } from '../stores/notifications'
 
 const AnecdoteList = () => {
   const anecdotes = useAnecdotes()
-  const { incVote } = useAnecdoteActions()
+  const { incVote, remove } = useAnecdoteActions()
+  
+  const { setNotification } = useNotificationActions()
 
-  const vote = id => {
-    incVote(id)
+  const vote = anecdote => {
+    incVote(anecdote.id)
+    setNotification(`You voted "${anecdote.content}"`)
+  }
+
+  const removeAnecdote = id => {
+    remove(id)
   }
 
   const sortedAnecdotes = anecdotes.toSorted((a, b) => b.votes - a.votes)
@@ -18,7 +26,9 @@ const AnecdoteList = () => {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => vote(anecdote)}>vote</button>
+            {anecdote.votes === 0
+              && <button onClick={() => removeAnecdote(anecdote.id)}>remove</button>}
           </div>
         </div>
       ))}

@@ -1,12 +1,12 @@
-import { useAnecdoteActions } from '../store'
+import { useAnecdoteActions } from '../stores/anecdotes'
 
 const AnecdoteForm = () => {
-  const { addAnecdote } = useAnecdoteActions()
+  const { add } = useAnecdoteActions()
 
   const anecdote = (e) => {
     e.preventDefault()
     const content = e.target.anecdote.value
-    addAnecdote(content)
+    add(content)
     e.target.reset()
   }
   
