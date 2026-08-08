@@ -3,11 +3,14 @@ import { Routes, Route, Link, useMatch } from 'react-router-dom'
 import ErrorBoundary from './components/ErrorBoundary'
 import Notification from './components/Notification'
 import Home from './components/Home'
+import UserList from './components/UserList'
+import User from './components/User'
 import Blog from './components/Blog'
 import NewPlog from './components/NewBlog'
 import LoginForm from './components/LoginForm'
 import Logout from './components/Logout'
 import blogService from './services/blogs'
+import userService from './services/users'
 import loginService from './services/login'
 import { useNotificationActions } from './stores/notifications'
 
@@ -19,6 +22,7 @@ const App = () => {
     return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
   })
   const [blogs, setBlogs] = useState([])
+  const [users, setUsers] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -28,6 +32,7 @@ const App = () => {
     blogService
       .getAll()
       .then((blogs) => setBlogs(blogs.toSorted((a, b) => b.likes - a.likes)))
+    userService.getAll().then((users) => setUsers(users))
   }, [])
 
   useEffect(() => {
@@ -63,8 +68,12 @@ const App = () => {
   )
 
   const match = useMatch('/blogs/:id')
+  const userMatch = useMatch('/users/:id')
 
   const blog = match ? blogs.find((b) => b.id === match.params.id) : null
+  const selectedUser = userMatch
+    ? users.find((u) => u.id === userMatch.params.id)
+    : null
 
   const hoverStyle = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
 
@@ -74,6 +83,9 @@ const App = () => {
         <Toolbar>
           <Button color="inherit" component={Link} to="/" sx={hoverStyle}>
             home
+          </Button>
+          <Button color="inherit" component={Link} to="/users" sx={hoverStyle}>
+            users
           </Button>
           {user && (
             <Button
@@ -114,7 +126,9 @@ const App = () => {
               )
             }
           />
+          <Route path="/users/:id" element={<User user={selectedUser} />} />
           <Route path="/" element={<Home blogs={blogs} />} />
+          <Route path="/users" element={<UserList users={users} />} />
           <Route
             path="/login"
             element={!user ? loginForm() : <Home blogs={blogs} />}
