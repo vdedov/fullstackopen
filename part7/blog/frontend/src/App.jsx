@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, Link, useMatch } from 'react-router-dom'
+import ErrorBoundary from './components/ErrorBoundary'
 import Notification from './components/Notification'
 import Home from './components/Home'
 import Blog from './components/Blog'
@@ -8,6 +9,7 @@ import LoginForm from './components/LoginForm'
 import Logout from './components/Logout'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { useNotificationActions } from './stores/notifications'
 
 import { Container, AppBar, Toolbar, Button } from '@mui/material'
 
@@ -19,7 +21,8 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [notification, setNotification] = useState(null)
+
+  const { setNotification } = useNotificationActions()
 
   useEffect(() => {
     blogService
@@ -45,10 +48,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setNotification({ text: 'wrong username or password', isError: true })
-      setTimeout(() => {
-        setNotification(null)
-      }, 2000)
+      setNotification('wrong username or password', true)
     }
   }
 
@@ -99,36 +99,32 @@ const App = () => {
           )}
         </Toolbar>
       </AppBar>
-      <div>
-        <Notification notification={notification} />
-      </div>
-      <Routes>
-        <Route
-          path="/blogs/:id"
-          element={
-            blog ? (
-              <Blog blog={blog} setBlogs={setBlogs} user={user} />
-            ) : (
-              <div>blog not found</div>
-            )
-          }
-        />
-        <Route path="/" element={<Home blogs={blogs} />} />
-        <Route
-          path="/login"
-          element={!user ? loginForm() : <Home blogs={blogs} />}
-        />
-        <Route
-          path="/create"
-          element={
-            <NewPlog
-              setBlogs={setBlogs}
-              setNotification={setNotification}
-              user={user}
-            />
-          }
-        />
-      </Routes>
+      <ErrorBoundary>
+        <div>
+          <Notification />
+        </div>
+        <Routes>
+          <Route
+            path="/blogs/:id"
+            element={
+              blog ? (
+                <Blog blog={blog} setBlogs={setBlogs} user={user} />
+              ) : (
+                <div>blog not found</div>
+              )
+            }
+          />
+          <Route path="/" element={<Home blogs={blogs} />} />
+          <Route
+            path="/login"
+            element={!user ? loginForm() : <Home blogs={blogs} />}
+          />
+          <Route
+            path="/create"
+            element={<NewPlog setBlogs={setBlogs} user={user} />}
+          />
+        </Routes>
+      </ErrorBoundary>
     </Container>
   )
 }

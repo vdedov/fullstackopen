@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import blogService from '../services/blogs'
+import { useNotificationActions } from '../stores/notifications'
 
 import { TextField, Button } from '@mui/material'
 
-const NewBlog = ({ setBlogs, setNotification, user }) => {
+const NewBlog = ({ setBlogs, user }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const navigate = useNavigate()
+
+  const { setNotification } = useNotificationActions()
 
   const handleNewBlog = async (event) => {
     event.preventDefault()
@@ -25,13 +28,9 @@ const NewBlog = ({ setBlogs, setNotification, user }) => {
       setTitle('')
       setAuthor('')
       setUrl('')
-      setNotification({ text: 'a new post has been added', isError: false })
+      setNotification('a new post has been added', false)
     } catch {
-      setNotification({ text: 'something went wrong', isError: true })
-    } finally {
-      setTimeout(() => {
-        setNotification(null)
-      }, 2000)
+      setNotification('something went wrong', true)
     }
   }
 

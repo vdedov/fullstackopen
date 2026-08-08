@@ -1,4 +1,7 @@
-const Notification = ({ notification }) => {
+import { useNotifications } from '../stores/notifications'
+
+const Notification = () => {
+  const notification = useNotifications()
   if (notification === null) {
     return null
   }

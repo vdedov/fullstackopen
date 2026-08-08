@@ -1,8 +1,11 @@
+import { useNavigate } from 'react-router-dom'
 import blogService from '../services/blogs'
 
 import { Button } from '@mui/material'
 
 const Blog = ({ blog, setBlogs, handleLike, user }) => {
+  const navigate = useNavigate()
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -38,6 +41,7 @@ const Blog = ({ blog, setBlogs, handleLike, user }) => {
 
     await blogService.remove(blog)
     setBlogs((blogs) => blogs.filter((b) => b.id !== blog.id))
+    navigate('/')
   }
 
   const canRemove = blog.user?.username === user?.username
