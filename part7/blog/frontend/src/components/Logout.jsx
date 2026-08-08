@@ -12,11 +12,7 @@ const Logout = ({ setUser }) => {
   const hoverStyle = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
 
   return (
-    <Button
-      color="inherit"
-      onClick={setLogout}
-      sx={hoverStyle}
-    >
+    <Button color="inherit" onClick={setLogout} sx={hoverStyle}>
       logout
     </Button>
   )

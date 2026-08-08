@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-  Routes, Route, Link, useMatch
-} from 'react-router-dom'
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
 import Notification from './components/Notification'
 import Home from './components/Home'
 import Blog from './components/Blog'
@@ -24,9 +22,9 @@ const App = () => {
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs.toSorted((a, b) => b.likes - a.likes) )
-    )
+    blogService
+      .getAll()
+      .then((blogs) => setBlogs(blogs.toSorted((a, b) => b.likes - a.likes)))
   }, [])
 
   useEffect(() => {
@@ -35,15 +33,13 @@ const App = () => {
     }
   }, [user])
 
-  const handleLogin = async event => {
+  const handleLogin = async (event) => {
     event.preventDefault()
 
     try {
       const user = await loginService.login({ username, password })
 
-      window.localStorage.setItem(
-        'loggedBlogAppUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -68,9 +64,7 @@ const App = () => {
 
   const match = useMatch('/blogs/:id')
 
-  const blog = match
-    ? blogs.find(b => b.id === match.params.id)
-    : null
+  const blog = match ? blogs.find((b) => b.id === match.params.id) : null
 
   const hoverStyle = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
 
@@ -78,12 +72,31 @@ const App = () => {
     <Container>
       <AppBar position="static">
         <Toolbar>
-          <Button color="inherit" component={Link} to="/" sx={hoverStyle}>home</Button>
-          {user && <Button color="inherit" component={Link} to="/create" sx={hoverStyle}>new blog</Button>}
-          {!user
-            ? <Button color="inherit" component={Link} to="/login" sx={hoverStyle}>login</Button>
-            : <Logout setUser={setUser} />
-          }
+          <Button color="inherit" component={Link} to="/" sx={hoverStyle}>
+            home
+          </Button>
+          {user && (
+            <Button
+              color="inherit"
+              component={Link}
+              to="/create"
+              sx={hoverStyle}
+            >
+              new blog
+            </Button>
+          )}
+          {!user ? (
+            <Button
+              color="inherit"
+              component={Link}
+              to="/login"
+              sx={hoverStyle}
+            >
+              login
+            </Button>
+          ) : (
+            <Logout setUser={setUser} />
+          )}
         </Toolbar>
       </AppBar>
       <div>
@@ -93,13 +106,11 @@ const App = () => {
         <Route
           path="/blogs/:id"
           element={
-            blog
-              ? <Blog
-                blog={blog}
-                setBlogs={setBlogs}
-                user={user}
-              />
-              : <div>blog not found</div>
+            blog ? (
+              <Blog blog={blog} setBlogs={setBlogs} user={user} />
+            ) : (
+              <div>blog not found</div>
+            )
           }
         />
         <Route path="/" element={<Home blogs={blogs} />} />
@@ -107,12 +118,16 @@ const App = () => {
           path="/login"
           element={!user ? loginForm() : <Home blogs={blogs} />}
         />
-        <Route path="/create" element={
-          <NewPlog
-            setBlogs={setBlogs}
-            setNotification={setNotification}
-            user={user}
-          />} />
+        <Route
+          path="/create"
+          element={
+            <NewPlog
+              setBlogs={setBlogs}
+              setNotification={setNotification}
+              user={user}
+            />
+          }
+        />
       </Routes>
     </Container>
   )

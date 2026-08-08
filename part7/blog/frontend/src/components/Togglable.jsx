@@ -7,7 +7,7 @@ const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
   const showWhenVisible = { display: visible ? '' : 'none' }
 
   const toggleVisibility = () => {
-    setVisible(visible => !visible)
+    setVisible((visible) => !visible)
   }
 
   useImperativeHandle(ref, () => {

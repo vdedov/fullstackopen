@@ -5,13 +5,11 @@ const Home = ({ blogs }) => {
     <div>
       <h2>blogs</h2>
       <ul>
-        {blogs.map(blog =>
+        {blogs.map((blog) => (
           <li key={blog.id}>
-            <Link to={`/blogs/${blog.id}`}>
-              { blog.title}
-            </Link>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
           </li>
-        )}
+        ))}
       </ul>
     </div>
   )

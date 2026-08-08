@@ -27,9 +27,7 @@ test('all users are returned', async () => {
 })
 
 test('users have id property instead of _id', async () => {
-  const response = await api
-    .get('/api/users')
-    .expect(200)
+  const response = await api.get('/api/users').expect(200)
 
   const user = response.body[0]
   assert.ok(user.id)
@@ -42,15 +40,12 @@ test('a valid user can be added', async () => {
     password: 'test',
   }
 
-  await api
-    .post('/api/users')
-    .send(newUser)
-    .expect(201)
+  await api.post('/api/users').send(newUser).expect(201)
 
   const usersAtEnd = await helper.usersInDb()
   assert.strictEqual(usersAtEnd.length, helper.initialUsers.length + 1)
 
-  const url = usersAtEnd.map(u => u.username)
+  const url = usersAtEnd.map((u) => u.username)
   assert(url.includes(newUser.username))
 })
 
@@ -60,10 +55,7 @@ test('a user without username cannot be added', async () => {
     password: 'test',
   }
 
-  await api
-    .post('/api/users')
-    .send(newUser)
-    .expect(400)
+  await api.post('/api/users').send(newUser).expect(400)
 
   const usersAtEnd = await helper.usersInDb()
   assert.strictEqual(usersAtEnd.length, helper.initialUsers.length)
@@ -97,10 +89,7 @@ test('a user with short username cannot be added', async () => {
     password: 'test',
   }
 
-  await api
-    .post('/api/users')
-    .send(newUser)
-    .expect(400)
+  await api.post('/api/users').send(newUser).expect(400)
 
   const usersAtEnd = await helper.usersInDb()
   assert.strictEqual(usersAtEnd.length, helper.initialUsers.length)
@@ -113,10 +102,7 @@ test('a user with short password cannot be added', async () => {
     password: 'te',
   }
 
-  await api
-    .post('/api/users')
-    .send(newUser)
-    .expect(400)
+  await api.post('/api/users').send(newUser).expect(400)
 
   const usersAtEnd = await helper.usersInDb()
   assert.strictEqual(usersAtEnd.length, helper.initialUsers.length)

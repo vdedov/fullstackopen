@@ -13,44 +13,44 @@ describe('total likes', () => {
   const blogs = [
     {
       author: 'Robert C. Martin',
-      blogs: 3
+      blogs: 3,
     },
     {
       author: 'Martin Fowler',
-      blogs: 8
+      blogs: 8,
     },
     {
       author: 'Kent Beck',
-      blogs: 6
+      blogs: 6,
     },
     {
       author: 'Dan Abramov',
-      blogs: 12
+      blogs: 12,
     },
     {
       author: 'Linus Torvalds',
-      blogs: 15
+      blogs: 15,
     },
     {
       author: 'Kyle Simpson',
-      blogs: 10
+      blogs: 10,
     },
     {
       author: 'Addy Osmani',
-      blogs: 7
+      blogs: 7,
     },
     {
       author: 'Edsger W. Dijkstra',
-      blogs: 5
+      blogs: 5,
     },
     {
       author: 'Donald Knuth',
-      blogs: 9
+      blogs: 9,
     },
     {
       author: 'Bjarne Stroustrup',
-      blogs: 4
-    }
+      blogs: 4,
+    },
   ]
 
   test('returns the author with the most blogs', () => {

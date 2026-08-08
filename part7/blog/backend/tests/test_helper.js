@@ -13,7 +13,7 @@ const initialBlogs = [
     author: 'Edsger W. Dijkstra',
     url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
     likes: 5,
-  }
+  },
 ]
 
 const initialUsers = [
@@ -26,7 +26,7 @@ const initialUsers = [
     username: 'dijkstra',
     name: 'Edsger W. Dijkstra',
     passwordHash: 'J4djeu4elQRlb1VqG',
-  }
+  },
 ]
 
 const nonExistingId = async () => {
@@ -39,12 +39,12 @@ const nonExistingId = async () => {
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
-  return blogs.map(blog => blog.toJSON())
+  return blogs.map((blog) => blog.toJSON())
 }
 
 const usersInDb = async () => {
   const users = await User.find({})
-  return users.map(user => user.toJSON())
+  return users.map((user) => user.toJSON())
 }
 
 module.exports = {

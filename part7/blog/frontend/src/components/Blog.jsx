@@ -8,7 +8,7 @@ const Blog = ({ blog, setBlogs, handleLike, user }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
   }
 
   const incLike = async () => {
@@ -19,13 +19,15 @@ const Blog = ({ blog, setBlogs, handleLike, user }) => {
 
     const updatedBlog = await blogService.update({
       ...blog,
-      likes: blog.likes + 1
+      likes: blog.likes + 1,
     })
 
-    setBlogs(blogs =>
+    setBlogs((blogs) =>
       blogs
-        .map(b => b.id === blog.id ? { ...updatedBlog, user: blog.user } : b)
-        .toSorted((a, b) => b.likes - a.likes)
+        .map((b) =>
+          b.id === blog.id ? { ...updatedBlog, user: blog.user } : b,
+        )
+        .toSorted((a, b) => b.likes - a.likes),
     )
   }
 
@@ -35,9 +37,7 @@ const Blog = ({ blog, setBlogs, handleLike, user }) => {
     }
 
     await blogService.remove(blog)
-    setBlogs(blogs =>
-      blogs.filter(b => b.id !== blog.id)
-    )
+    setBlogs((blogs) => blogs.filter((b) => b.id !== blog.id))
   }
 
   const canRemove = blog.user?.username === user?.username
@@ -48,17 +48,25 @@ const Blog = ({ blog, setBlogs, handleLike, user }) => {
         <h2>{blog.title}</h2>
         <p>by {blog.author}</p>
       </div>
-      <a
-        href={blog.url}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a href={blog.url} target="_blank" rel="noopener noreferrer">
         {blog.url}
       </a>
       <p>
         {blog.likes} likes
-        {user && <Button variant='outlined' onClick={() => incLike()}>like</Button>}
-        {canRemove && <Button variant='outlined' color='error' onClick={() => handleRemove()}>remove</Button>}
+        {user && (
+          <Button variant="outlined" onClick={() => incLike()}>
+            like
+          </Button>
+        )}
+        {canRemove && (
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => handleRemove()}
+          >
+            remove
+          </Button>
+        )}
       </p>
     </div>
   )

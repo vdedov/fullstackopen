@@ -11,9 +11,11 @@
     "dev": "npm run dev:full",
     "dev:ui": "npm --prefix frontend run dev",
     "dev:server": "npm --prefix backend run dev",
-    "dev:full": "concurrently -k -n server,ui -c green,blue \"npm run dev:server\" \"npm run dev:ui\""
+    "dev:full": "concurrently -k -n server,ui -c green,blue \"npm run dev:server\" \"npm run dev:ui\"",
+    "lint": "npx prettier . --write"
   },
   "devDependencies": {
-    "concurrently": "^10.0.4"
+    "concurrently": "^10.0.4",
+    "prettier": "^3.9.6"
   }
 }

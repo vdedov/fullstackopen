@@ -10,8 +10,8 @@ const blog = {
   id: '12345',
   user: {
     username: 'mluukkai',
-    name: 'Matti Luukkainen'
-  }
+    name: 'Matti Luukkainen',
+  },
 }
 
 test('shows blog details and no action buttons for unauthenticated users', () => {
@@ -33,7 +33,7 @@ test('shows only like button for authenticated users who are not the creator', (
       blog={blog}
       setBlogs={() => {}}
       user={{ username: 'other-user', name: 'Other User' }}
-    />
+    />,
   )
 
   expect(screen.getByText('like')).toBeInTheDocument()
@@ -46,7 +46,7 @@ test('shows remove button for the blog creator', () => {
       blog={blog}
       setBlogs={() => {}}
       user={{ username: 'mluukkai', name: 'Matti Luukkainen' }}
-    />
+    />,
   )
 
   expect(screen.getByText('like')).toBeInTheDocument()
@@ -63,7 +63,7 @@ test('calls like handler twice when like button is clicked twice', async () => {
       setBlogs={() => {}}
       handleLike={handleLike}
       user={{ username: 'other-user', name: 'Other User' }}
-    />
+    />,
   )
 
   await user.click(screen.getByText('like'))

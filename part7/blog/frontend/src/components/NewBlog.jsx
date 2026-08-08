@@ -10,7 +10,7 @@ const NewBlog = ({ setBlogs, setNotification, user }) => {
   const [url, setUrl] = useState('')
   const navigate = useNavigate()
 
-  const handleNewBlog = async event => {
+  const handleNewBlog = async (event) => {
     event.preventDefault()
 
     try {
@@ -20,7 +20,7 @@ const NewBlog = ({ setBlogs, setNotification, user }) => {
         ? { ...blog, user: { username: user.username, name: user.name } }
         : blog
 
-      setBlogs(blog => blog.concat(blogWithUser))
+      setBlogs((blog) => blog.concat(blogWithUser))
       navigate('/')
       setTitle('')
       setAuthor('')
@@ -42,25 +42,27 @@ const NewBlog = ({ setBlogs, setNotification, user }) => {
         <div>
           <TextField
             value={title}
-            placeholder='title'
-            onChange={event => setTitle(event.target.value)}
+            placeholder="title"
+            onChange={(event) => setTitle(event.target.value)}
           />
         </div>
         <div>
           <TextField
             value={author}
-            placeholder='author'
-            onChange={event => setAuthor(event.target.value)}
+            placeholder="author"
+            onChange={(event) => setAuthor(event.target.value)}
           />
         </div>
         <div>
           <TextField
             value={url}
-            placeholder='url'
-            onChange={event => setUrl(event.target.value)}
+            placeholder="url"
+            onChange={(event) => setUrl(event.target.value)}
           />
         </div>
-        <Button type="submit" variant="contained">create</Button>
+        <Button type="submit" variant="contained">
+          create
+        </Button>
       </form>
     </div>
   )

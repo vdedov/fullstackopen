@@ -1,19 +1,19 @@
 const _ = require('lodash')
 
-const dummy = blogs => 1
+const dummy = (blogs) => 1
 
-const totalLikes = blogs => _.sumBy(blogs, 'likes')
+const totalLikes = (blogs) => _.sumBy(blogs, 'likes')
 
-const favoriteBlog = blogs => _.maxBy(blogs, 'likes')
+const favoriteBlog = (blogs) => _.maxBy(blogs, 'likes')
 
-const mostBlogs = blogs => _.maxBy(blogs, 'blogs')
+const mostBlogs = (blogs) => _.maxBy(blogs, 'blogs')
 
-const mostLikes = blogs => _.maxBy(blogs, 'likes').author
+const mostLikes = (blogs) => _.maxBy(blogs, 'likes').author
 
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
-  mostLikes
+  mostLikes,
 }

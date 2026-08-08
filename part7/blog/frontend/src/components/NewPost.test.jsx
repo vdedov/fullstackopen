@@ -6,8 +6,8 @@ import blogService from '../services/blogs'
 
 vi.mock('../services/blogs', () => ({
   default: {
-    create: vi.fn()
-  }
+    create: vi.fn(),
+  },
 }))
 
 test('calls create handler with correct details when a new blog is created', async () => {
@@ -15,16 +15,13 @@ test('calls create handler with correct details when a new blog is created', asy
   blogService.create.mockResolvedValue({
     title: 'Testing React components',
     author: 'Kent C. Dodds',
-    url: 'https://example.com/testing-react-components'
+    url: 'https://example.com/testing-react-components',
   })
 
   const { container } = render(
     <MemoryRouter>
-      <NewBlog
-        setBlogs={() => {}}
-        setNotification={() => {}}
-      />
-    </MemoryRouter>
+      <NewBlog setBlogs={() => {}} setNotification={() => {}} />
+    </MemoryRouter>,
   )
 
   const inputs = container.querySelectorAll('input')
@@ -38,6 +35,6 @@ test('calls create handler with correct details when a new blog is created', asy
   expect(blogService.create).toHaveBeenCalledWith({
     title: 'Testing React components',
     author: 'Kent C. Dodds',
-    url: 'https://example.com/testing-react-components'
+    url: 'https://example.com/testing-react-components',
   })
 })
