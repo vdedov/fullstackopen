@@ -1,0 +1,19 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run dev:full",
+    "dev:ui": "npm --prefix frontend run dev",
+    "dev:server": "npm --prefix backend run dev",
+    "dev:full": "concurrently -k -n server,ui -c green,blue \"npm run dev:server\" \"npm run dev:ui\""
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.4"
+  }
+}
